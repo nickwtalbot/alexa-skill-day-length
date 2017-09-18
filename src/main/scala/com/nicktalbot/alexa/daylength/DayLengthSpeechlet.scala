@@ -59,16 +59,30 @@ class DayLengthSpeechlet(information: Information) extends SpeechletV2 with Logg
       val location = address.flatMap(postalLocation)
       val daylight = location.flatMap(information.locationDaylight)
 
-      val seconds = Await.result(daylight, Duration.Inf)
+      try {
 
-      logger.info(s"User Address: ${address.value.flatMap(_.toOption).get}")
-      logger.info(s"User Location: ${location.value.flatMap(_.toOption).get}")
-      logger.info(s"Daylight: $seconds seconds")
+        val seconds = Await.result(daylight, Duration.Inf)
 
-      val duration = Duration(seconds, "seconds")
-      val response = s"There are ${duration.toHours} hours, ${duration.toMinutes % 60} minutes, and ${seconds % 60} seconds of daylight today between sunrise and sunset in ${location.value.flatMap(_.toOption).get.name}"
+        logger.info(s"User Address: ${address.value.flatMap(_.toOption).get}")
+        logger.info(s"User Location: ${location.value.flatMap(_.toOption).get}")
+        logger.info(s"Daylight: $seconds seconds")
 
-      SpeechletResponse.newTellResponse(response, ("Daylight Period", response))
+        val duration = Duration(seconds, "seconds")
+        val response = s"There are ${duration.toHours} hours, ${duration.toMinutes % 60} minutes, and ${seconds % 60} seconds of daylight today between sunrise and sunset in ${location.value.flatMap(_.toOption).get.name}"
+
+        SpeechletResponse.newTellResponse(response, ("Daylight Period", response))
+      }
+      catch {
+
+        case exception: Throwable =>
+
+          logger.error("Failed to determine location or day length" , exception)
+
+          SpeechletResponse.newTellResponse(
+            "Day Length was unable to determine the day length in your location",
+            ("Day Length Error", "Unable to determine day length in your location")
+          )
+      }
     }
   }
 
