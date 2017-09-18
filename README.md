@@ -17,3 +17,5 @@ The Alexa Skill provides a response by:
 `sbt assembly` produces a deployable fat jar, containing all dependencies including the Scala runtime.
 
 This can be deployed to AWS Lambda using the Java 8 runtime option.
+
+Available from Amazon at https://www.amazon.com/dp/B075Q1C1BX
