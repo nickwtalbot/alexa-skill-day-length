@@ -1,7 +1,6 @@
 package com.nicktalbot.alexa.daylength.traits
 
 import com.nicktalbot.alexa.daylength.data.{Location, UserAddress}
-
 import scala.concurrent.Future
 
 trait Information {
